@@ -81,8 +81,8 @@ app.post('/login', async (req, res) => {
         [username]
       );
   console.log(user.rows)
-  console.log(user.rows[password_hash])
-  console.log(user.rows[user_id])
+  console.log(user.rows[0].password_hash)
+  console.log(user.rows[0].user_id)
       if (user.rows.length === 0) {
         return res.status(401).json('Invalid credentials');
       }
