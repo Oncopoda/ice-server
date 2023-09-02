@@ -90,7 +90,7 @@ app.post('/login', async (req, res) => {
       if (!isPasswordValid) {
         return res.status(401).json('Invalid credentials');
       }
-      
+      console.log(token)
       const token = jwt.sign({ user: user_id }, secretKey);      
       res.json({ token });
       console.log(token)
