@@ -80,7 +80,7 @@ app.post('/login', async (req, res) => {
         'SELECT * FROM Users WHERE username = $1',
         [username]
       );
-  console.log(req.body)
+  console.log(user_id)
   console.log(user.rows[0])
       if (user.rows.length === 0) {
         return res.status(401).json('Invalid credentials');
@@ -90,10 +90,9 @@ app.post('/login', async (req, res) => {
       if (!isPasswordValid) {
         return res.status(401).json('Invalid credentials');
       }
-      console.log(token)
+      
       const token = jwt.sign({ user: user_id }, secretKey);      
       res.json({ token });
-      console.log(token)
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server error');
