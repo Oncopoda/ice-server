@@ -86,13 +86,13 @@ app.post('/login', async (req, res) => {
       if (user.rows.length === 0) {
         return res.status(401).json('Invalid credentials');
       }
-      const isPasswordValid = await bcrypt.compare(password, user.rows[0].password);
+      const isPasswordValid = await bcrypt.compare(password, user.rows[0].password_hash);
   
       if (!isPasswordValid) {
         return res.status(401).json('Invalid credentials');
       }
       
-      const token = jwt.sign({ user: user_id }, secretKey);      
+      const token = jwt.sign({ user: user.rows[0].user_id }, secretKey);      
       res.json({ token });
     } catch (error) {
       console.error(error.message);
