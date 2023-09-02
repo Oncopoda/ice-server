@@ -91,7 +91,7 @@ app.post('/login', async (req, res) => {
         return res.status(401).json('Invalid credentials');
       }
       
-      const token = jwt.sign({ user: user.rows[0].id }, secretKey);
+      const token = jwt.sign({ user: user_id }, secretKey);
       console.log(token)
       res.json({ token });
     } catch (error) {
