@@ -91,7 +91,7 @@ app.post('/login', async (req, res) => {
       }
   
       const token = jwt.sign({ user: user.rows[0].id }, secretKey);
-      
+      console.log(token)
       res.json({ token });
     } catch (error) {
       console.error(error.message);
