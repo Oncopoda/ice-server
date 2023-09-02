@@ -91,14 +91,14 @@ app.post('/login', async (req, res) => {
         return res.status(401).json('Invalid credentials');
       }
       
-      const token = jwt.sign({ user: user_id }, secretKey);
-      
+      const token = jwt.sign({ user: user_id }, secretKey);      
       res.json({ token });
+      console.log(token)
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server error');
     }
-    console.log(token)
+    
   });
 
 
