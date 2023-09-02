@@ -51,7 +51,7 @@ app.get('/users', async (req, res) => {
 app.post('/register', async (req, res) => {
     try {
       const { username, email, password } = req.body;
-      console.log(req.body)
+      console.log(token)
       if(!password) {
         return res.status(400).json({ error: 'Password is required' })
       }
