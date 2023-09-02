@@ -81,6 +81,7 @@ app.post('/login', async (req, res) => {
         [username]
       );
   console.log(req.body)
+  console.log(user.rows[0])
       if (user.rows.length === 0) {
         return res.status(401).json('Invalid credentials');
       }
@@ -89,7 +90,7 @@ app.post('/login', async (req, res) => {
       if (!isPasswordValid) {
         return res.status(401).json('Invalid credentials');
       }
-      console.log(user.rows[0])
+      
       const token = jwt.sign({ user: user.rows[0].id }, secretKey);
       console.log(token)
       res.json({ token });
