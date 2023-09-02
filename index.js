@@ -44,7 +44,7 @@ app.get('/users', async (req, res) => {
 
 
 // Register
-app.post('https://filthy-sweatshirt-boa.cyclic.app/register', async (req, res) => {
+app.post('/register', async (req, res) => {
     try {
       const { username, email, password } = req.body;
 
@@ -55,7 +55,7 @@ app.post('https://filthy-sweatshirt-boa.cyclic.app/register', async (req, res) =
       const hashedPassword = await bcrypt.hash(password, 10);
   
       await pool.query(
-        'INSERT INTO Users (username, email, password_hash) VALUES ($1, $2, $3)',
+        'INSERT INTO Users (username, email, password) VALUES ($1, $2, $3)',
         [username, email, hashedPassword]
       );
   
