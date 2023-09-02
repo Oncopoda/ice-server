@@ -80,7 +80,7 @@ app.post('/login', async (req, res) => {
         'SELECT * FROM Users WHERE username = $1',
         [username]
       );
-  
+  console.log(req.body)
       if (user.rows.length === 0) {
         return res.status(401).json('Invalid credentials');
       }
