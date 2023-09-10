@@ -67,7 +67,7 @@ app.post('/addtodos', async (req, res) => {
   try {
     const { username, task_name } = req.body;
     const user = await pool.query(
-      'INSERT INTO Tasks (username, task_name) VALUES ($1, $2);' ,
+      'INSERT INTO Tasks (username, task_name) VALUES ($1, $2)',
       [username, task_name]
     );
     res.setHeader('Content-Type', 'application/json')
