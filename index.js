@@ -46,7 +46,7 @@ app.get('/users', async (req, res) => {
 //Fetch ToDo List
 app.get('/todos', async (req, res) => {
   try {
-    const users = await pool.query('SELECT * FROM Tasks');
+    const users = await pool.query('SELECT * FROM Todos');
     console.log(users.rows)
     // Check that users.rows is a valid array of objects
     if (Array.isArray(users.rows)) {
@@ -65,10 +65,10 @@ app.get('/todos', async (req, res) => {
 //Add ToDos
 app.post('/addtodos', async (req, res) => {
   try {
-    const { task_name } = req.body;
+    const { username, task_name } = req.body;
     const user = await pool.query(
-      'INSERT INTO Tasks (task_name) VALUES ($1)',
-      [task_name]
+      'INSERT INTO Todos (username, task_name) VALUES ($1, $2)',
+      [username, task_name]
     );
     res.setHeader('Content-Type', 'application/json')
       res.status(201).json({ message: 'Todo added' });
