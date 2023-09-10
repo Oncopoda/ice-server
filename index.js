@@ -75,11 +75,29 @@ app.post('/addtodos', async (req, res) => {
   } catch(error) {
   console.error(error.message);
     res.status(500).send('Server error')
-  }
-    
+  } 
     
 });
 
+//Delete
+app.delete('/deleteTodo/:id', async (req, res) => {
+  const todoId = parseInt(req.params.id);
+
+  try {
+    // Use a PostgreSQL query to delete the todo by ID
+    const query = 'DELETE FROM Todos WHERE id = $1';
+    const result = await pool.query(query, [todoId]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+
+    res.json({ message: 'Todo deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting todo:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 // Register
