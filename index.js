@@ -44,6 +44,24 @@ app.get('/users', async (req, res) => {
 });
 
 
+app.get('/todos', async (req, res) => {
+  try {
+    const users = await pool.query('SELECT * FROM Tasks');
+    console.log(users.rows)
+    // Check that users.rows is a valid array of objects
+    if (Array.isArray(users.rows)) {
+      // Send the list of users as a JSON response
+      res.json(users.rows);
+    } else {
+      // Handle unexpected data structure
+      res.status(500).send('Unexpected data structure');
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+});
+
 
 
 
