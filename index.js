@@ -51,11 +51,9 @@ app.get('/users', async (req, res) => {
 app.post('/register', async (req, res) => {
     try {
       const { username, email, password } = req.body;
-      console.log(token)
       if(!password) {
         return res.status(400).json({ error: 'Password is required' })
-      }
-  
+      }  
       const hashedPassword = await bcrypt.hash(password, 10);
   
       await pool.query(
@@ -93,7 +91,8 @@ app.post('/login', async (req, res) => {
       }
       
       const token = jwt.sign({ user: user.rows[0].user_id }, secretKey);      
-      res.json({ token });
+      
+      res.json({ token, username });
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server error');
