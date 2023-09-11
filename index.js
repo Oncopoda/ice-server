@@ -1,8 +1,4 @@
-const http = require('http');
-
 const express = require('express');
-
-const { Server } = require('socket.io');
 
 const cors = require('cors');
 const pool = require('./db');
@@ -15,12 +11,8 @@ const secretKey = crypto.randomBytes(32).toString('hex');
 
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
 
-io.on('connection', (socket) => {
-  console.log('User connected')
-})
+
 
 // Middleware
 app.use(cors());
@@ -87,7 +79,6 @@ app.post('/addtodos', async (req, res) => {
   console.error(error.message);
     res.status(500).send('Server error')
   } 
-  io.emit('addtodos', { todo })
 });
 
 //Delete
@@ -108,7 +99,6 @@ app.delete('/deleteTodo/:id', async (req, res) => {
     console.error('Error deleting todo:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-  io.emit('todoDeleted', { todoId: req.params.id });
 });
 
 
