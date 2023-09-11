@@ -117,6 +117,7 @@ app.post('/register', async (req, res) => {
     );
     
     if (existingUser.rows.length > 0) {
+      res.setHeader('Content-Type', 'application/json')
       return res.status(400).json({ error: 'Username taken' });
     }
 
