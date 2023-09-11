@@ -109,6 +109,13 @@ app.post('/register', async (req, res) => {
       if(!password) {
         return res.status(400).json({ error: 'Password is required' })
       }  
+
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(406).json({
+        error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+      });
+    }
       
       // Check if the username already exists in the database
     const existingUser = await pool.query(
