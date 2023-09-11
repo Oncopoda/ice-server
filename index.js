@@ -109,6 +109,17 @@ app.post('/register', async (req, res) => {
       if(!password) {
         return res.status(400).json({ error: 'Password is required' })
       }  
+      
+      // Check if the username already exists in the database
+    const existingUser = await pool.query(
+      'SELECT * FROM Users WHERE username = $1',
+      [username]
+    );
+    
+    if (existingUser.rows.length > 0) {
+      return res.status(400).json({ error: 'Username taken' });
+    }
+
       const hashedPassword = await bcrypt.hash(password, 10);
   
       await pool.query(
