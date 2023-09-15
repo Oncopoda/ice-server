@@ -9,6 +9,8 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const secretKey = crypto.randomBytes(32).toString('hex');
 
+const nodemailer = require('nodemailer');
+const resetTokens = new Map()
 
 const app = express();
 
@@ -197,8 +199,173 @@ app.post('/login', async (req, res) => {
     
   });
 
+function cleanUpExpiredTokens() {
+    const currentTime = Date.now();
+  
+    // Iterate through the tokens and remove expired ones
+    for (const [token, expirationTime] of resetTokens.entries()) {
+      if (currentTime > expirationTime) {
+        resetTokens.delete(token); // Remove the expired token
+      }
+    }
+  }
+  
+  // Set up a timer to clean up expired tokens every hour (adjust the interval as needed)
+  const tokenCleanupInterval = 3600000; // 1 hour in milliseconds
+  setInterval(cleanUpExpiredTokens, tokenCleanupInterval);
 
 
+  //Forgot Password
+app.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Verify if the provided email exists in the database
+    const userWithEmailExists = await checkEmailExists(email);
+
+    if (!userWithEmailExists) {
+      // If the email doesn't exist in the database, return an error response
+      return res.status(400).json({ error: 'Email not found' });
+    }
+
+    // Generate a unique token (e.g., using crypto.randomBytes)
+    const token = crypto.randomBytes(32).toString('hex');
+    // Set the expiration time for the token (e.g., 1 hour from now)
+    const expirationTime = Date.now() + 3600000; // 1 hour in milliseconds
+
+    // Store the token and its expiration timestamp in the database
+    await pool.query(
+      'INSERT INTO reset_tokens (token, email, expiration_time) VALUES ($1, $2, $3)',
+      [token, email, expirationTime]
+    );
+
+    // Store the token and its expiration timestamp in a temporary storage
+    resetTokens.set(token, expirationTime);
+
+    // Send a password reset email with a link containing the token
+    // You'll need to configure your email provider (e.g., Gmail) and use its SMTP settings
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.EMAIL, // Your email address
+        pass: process.env.PASSWORD, // Your email password or app-specific password
+      },
+    });
+
+    // Define the email message
+    const mailOptions = {
+      from: 'no-reply@clinttheengineer.com', // Your email address
+      to: email, // Recipient's email address
+      subject: 'Password Reset',
+      html: `
+        <p>You have requested to reset your password.</p>
+        <p>Click the following link to reset your password:</p>
+        <a href="http://localhost:3000/reset-password?token=${token}">Reset Password</a>
+      `,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+        res.status(500).send('Failed to send password reset email');
+      } else {
+        console.log('Password reset email sent:', info.response);
+        res.status(200).json({ message: 'Password reset email sent' });
+      }
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// Helper function to check if the email exists in the database
+async function checkEmailExists(email) {
+  try {
+    // Query the database to check if the email exists
+    const query = 'SELECT COUNT(*) FROM Users WHERE email = $1';
+    const result = await pool.query(query, [email]);
+
+    // Check if a user with the provided email exists in the database
+    return result.rows[0].count > 0;
+  } catch (error) {
+    console.error('Error checking if email exists:', error);
+    throw error; // Handle the error appropriately in your application
+  }
+}
+
+
+  app.post('/reset-password', async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+  
+      // Verify the token and check if it's still valid (not expired)
+      const expirationTime = resetTokens.get(token);
+  
+      if (!expirationTime || Date.now() > expirationTime) {
+        return res.status(400).json({ error: 'Invalid or expired token' });
+      }
+  
+      // Assuming you have a database where user information is stored
+      // Retrieve the user's email address based on the token (you may need to store this association in your database)
+      const email = getUserEmailByToken(token);
+  
+      if (!email) {
+        return res.status(400).json({ error: 'Invalid token' });
+      }
+  
+      // Update the user's password in your database (replace with your database logic)
+      await updatePasswordByEmail(email, newPassword);
+  
+      // Delete or mark the token as used
+      resetTokens.delete(token);
+  
+      res.status(200).json({ message: 'Password reset successful' });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server error');
+    }
+  });
+  
+// Helper function to retrieve user email based on token
+async function getUserEmailByToken(token) {
+  try {
+    // Query the database to retrieve the user's email based on the token
+    const query = 'SELECT email FROM Users WHERE reset_token = $1';
+    const result = await pool.query(query, [token]);
+
+    // Check if a user with the provided token exists in the database
+    if (result.rows.length === 0) {
+      return null; // Token not found or expired
+    }
+
+    // Return the user's email
+    return result.rows[0].email;
+  } catch (error) {
+    console.error('Error retrieving user email by token:', error);
+    throw error; // Handle the error appropriately in your application
+  }
+}
+  
+// Helper function to update the user's password in the database
+async function updatePasswordByEmail(email, newPassword) {
+  try {
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password in the database
+    const query = 'UPDATE Users SET password_hash = $1 WHERE email = $2';
+    await pool.query(query, [hashedPassword, email]);
+
+    // Return true to indicate success
+    return true;
+  } catch (error) {
+    console.error('Error updating user password by email:', error);
+    throw error; // Handle the error appropriately in your application
+  }
+}
+  
 
 
 // Start the server
