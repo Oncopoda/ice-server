@@ -296,7 +296,7 @@ async function checkEmailExists(email) {
 }
 
 
-  app.post('/reset-password', async (req, res) => {
+  app.post('/reset-password/:token', async (req, res) => {
     try {
       const { token, newPassword } = req.body;
   
