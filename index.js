@@ -298,7 +298,8 @@ async function checkEmailExists(email) {
 
   app.post('/reset-password/:token', async (req, res) => {
     try {
-      const { token, newPassword } = req.body;
+      const { token } = req.params;
+      const { newPassword } = req.body;
   
       // Verify the token and check if it's still valid (not expired)
       const expirationTime = resetTokens.get(token);
