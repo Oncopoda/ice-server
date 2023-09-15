@@ -235,7 +235,7 @@ app.post('/forgot-password', async (req, res) => {
 
     // Store the token and its expiration timestamp in the database
     await pool.query(
-      'INSERT INTO reset_tokens (token, email, expiration_time) VALUES ($1, $2, $3)',
+      'INSERT INTO reset_tokens (token, email, expiration_time) VALUES ($1::uuid, $2, $3)',
       [token, email, expirationTime]
     );
 
