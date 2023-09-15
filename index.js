@@ -320,7 +320,7 @@ async function checkEmailExists(email) {
   
       // Delete or mark the token as used
       resetTokens.delete(token);
-  
+      res.redirect('/login')
       res.status(200).json({ message: 'Password reset successful' });
     } catch (error) {
       console.error(error.message);
@@ -366,6 +366,25 @@ async function updatePasswordByEmail(email, newPassword) {
   }
 }
   
+// Add this route before your other routes
+app.get('/validate-token/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    // Check if the token exists and is not expired in your temporary storage (resetTokens)
+    const expirationTime = resetTokens.get(token);
+
+    if (!expirationTime || Date.now() > new Date(expirationTime).getTime()) {
+      return res.status(400).json({ error: 'Invalid or expired token' });
+    }
+
+    // Token is valid
+    res.status(200).json({ message: 'Token is valid' });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+});
 
 
 // Start the server
