@@ -201,9 +201,7 @@ app.post('/login', async (req, res) => {
 
 
   
-  // Set up a timer to clean up expired tokens every hour (adjust the interval as needed)
-  const tokenCleanupInterval = 3600000; // 1 hour in milliseconds
-  setInterval(cleanUpExpiredTokens, tokenCleanupInterval);
+
 
 
   //Forgot Password
