@@ -240,7 +240,7 @@ app.post('/login', async (req, res) => {
   
       // Define the email message
       const mailOptions = {
-        from: 'no-reply@clinttheengineer.com', // Your email address
+        from: 'Icy To Do <no-reply@clinttheengineer.com>', // Your email address
         to: email, // Recipient's email address
         subject: 'Password Reset',
         html: `
