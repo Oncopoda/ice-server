@@ -246,7 +246,7 @@ app.post('/login', async (req, res) => {
         html: `
           <p>You have requested to reset your password.</p>
           <p>Click the following link to reset your password:</p>
-          <a href="http://localhost:3000/reset-password?token=${token}">Reset Password</a>
+          <a href="http://localhost:3000/validate-password?token=${token}">Reset Password</a>
         `,
       };
   
