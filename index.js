@@ -374,7 +374,9 @@ app.get('/validate-token/:token', async (req, res) => {
 
     // Check if the token exists and is not expired in your temporary storage (resetTokens)
     const expirationTime = resetTokens.get(token);
-
+    console.log(expirationTime)
+    console.log(token)
+    console.log(new Date(expirationTime).getTime())
     if (!expirationTime || Date.now() > new Date(expirationTime).getTime()) {
       return res.status(400).json({ error: 'Invalid or expired token' });
     }
