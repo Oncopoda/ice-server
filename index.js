@@ -354,7 +354,7 @@ async function updatePasswordByEmail(email, newPassword) {
 }
   
 // Add this route before your other routes
-app.get('/validate-token/:token', async (req, res) => {
+app.get('/validate-password/:token', async (req, res) => {
   try {
     const { token } = req.params;
     console.log(token)
@@ -368,7 +368,7 @@ app.get('/validate-token/:token', async (req, res) => {
 
     // Token is valid
     res.status(200).json({ message: 'Token is valid' });
-    res.json({ token })
+    res.json({ token})
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Server error');
