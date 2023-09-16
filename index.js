@@ -357,7 +357,7 @@ async function updatePasswordByEmail(email, newPassword) {
 app.get('/validate-token/:token', async (req, res) => {
   try {
     const { token } = req.params;
-
+    console.log(token)
     // Query the database to check if the token exists and is not expired
     const query = 'SELECT email FROM reset_tokens WHERE token = $1 AND expiration_time > NOW()';
     const result = await pool.query(query, [token]);
@@ -368,6 +368,7 @@ app.get('/validate-token/:token', async (req, res) => {
 
     // Token is valid
     res.status(200).json({ message: 'Token is valid' });
+    res.json({ token })
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Server error');
