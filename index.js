@@ -154,7 +154,7 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$
     }
 
     const existingEmail = await pool.query(
-      'SELECT * FROM Users WHERE username = $2',
+      'SELECT * FROM Users WHERE email = $2',
       [email]
     );
 
