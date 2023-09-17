@@ -144,7 +144,7 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$
       
       // Check if the username already exists in the database
     const existingUser = await pool.query(
-      'SELECT * FROM Users WHERE username = $1',
+      'SELECT * FROM Users WHERE LOWER(username) = LOWER($1)',
       [username]
     );
     
@@ -189,7 +189,7 @@ app.post('/login', async (req, res) => {
     try {
       const { username, password } = req.body;
       const user = await pool.query(
-        'SELECT * FROM Users WHERE username = $1',
+        'SELECT * FROM Users WHERE LOWER(username) = LOWER($1)',
         [username]
       );
       if (user.rows.length === 0) {
