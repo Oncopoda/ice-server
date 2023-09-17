@@ -153,15 +153,6 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$
       return res.status(403).json({ error: 'Username taken' });
     }
 
-    const existingEmail = await pool.query(
-      'SELECT * FROM Users WHERE email = $2',
-      [email]
-    );
-
-    if (existingEmail.rows.length > 0) {
-      res.setHeader('Content-Type', 'application/json')
-      return res.status(403).json({ error: 'E-mail already in use'})
-    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
   
