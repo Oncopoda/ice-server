@@ -375,10 +375,29 @@ app.get('/validate-password/:token', async (req, res) => {
   }
 });
 
+async function deleteExpiredTokens() {
+  try {
+    const currentTime = new Date();
+    const query = 'DELETE FROM reset_tokens WHERE expiration_time <= $1';
+    const result = await pool.query(query, [currentTime]);
+    console.log(`Deleted ${result.rowCount} expired tokens`);
+  } catch (error) {
+    console.error('Error deleting expired tokens:', error);
+    res.status(501).send('Unable to delete expired tokens');
+  }
+}
 
+// Add this code before starting the server
+async function startServer() {
+  // Call the function to delete expired tokens
+  await deleteExpiredTokens();
 
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+}
+
+startServer();
