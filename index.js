@@ -10,13 +10,6 @@ const crypto = require('crypto');
 const secretKey = crypto.randomBytes(32).toString('hex');
 
 const nodemailer = require('nodemailer');
-const { default: rateLimit } = require('express-rate-limit');
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: 'Too many requests, please try again later'
-});
 
 
 const app = express();
@@ -27,7 +20,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(limiter)
 // Routes
 app.post('/test', (req, res) => {
   console.log(req.body);
