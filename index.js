@@ -83,7 +83,7 @@ app.post('/addtodos', async (req, res) => {
   } 
 });
 
-//Edit Todos
+
 //Edit Todos
 app.put('/editTodos/:id', async (req, res) => {
   try {
@@ -177,9 +177,6 @@ app.post('/login', async (req, res) => {
         'SELECT * FROM Users WHERE username = $1',
         [username]
       );
-  console.log(user.rows)
-  console.log(user.rows[0].password_hash)
-  console.log(user.rows[0].user_id)
       if (user.rows.length === 0) {
         return res.status(401).json('Invalid credentials');
       }
