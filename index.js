@@ -10,6 +10,13 @@ const crypto = require('crypto');
 const secretKey = crypto.randomBytes(32).toString('hex');
 
 const nodemailer = require('nodemailer');
+const { default: rateLimit } = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: 'Too many requests, please try again later'
+});
 
 
 const app = express();
@@ -20,6 +27,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(limiter);
 // Routes
 app.post('/test', (req, res) => {
   console.log(req.body);
@@ -30,7 +38,7 @@ app.post('/test', (req, res) => {
 
 
 // Add this route before your other routes
-app.get('/users', async (req, res) => {
+app.get('/users', limiter, async (req, res) => {
   try {
     const users = await pool.query('SELECT * FROM Users');
     console.log(users.rows)
@@ -49,7 +57,7 @@ app.get('/users', async (req, res) => {
 });
 
 //Fetch ToDo List
-app.get('/todos', async (req, res) => {
+app.get('/todos', limiter, async (req, res) => {
   try {
     const users = await pool.query('SELECT * FROM Todos');
     console.log(users.rows)
@@ -68,7 +76,7 @@ app.get('/todos', async (req, res) => {
 });
 
 //Add ToDos
-app.post('/addtodos', async (req, res) => {
+app.post('/addtodos', limiter, async (req, res) => {
   try {
     const { username, task_name } = req.body;
     const user = await pool.query(
@@ -85,7 +93,7 @@ app.post('/addtodos', async (req, res) => {
 
 
 //Edit Todos
-app.put('/editTodos/:id', async (req, res) => {
+app.put('/editTodos/:id', limiter, async (req, res) => {
   try {
     const taskId = parseInt(req.params.id);
     const { task_name } = req.body;
@@ -107,7 +115,7 @@ app.put('/editTodos/:id', async (req, res) => {
 
 
 //Delete
-app.delete('/deleteTodo/:id', async (req, res) => {
+app.delete('/deleteTodo/:id', limiter, async (req, res) => {
   const todoId = parseInt(req.params.id);
 
   try {
@@ -128,7 +136,7 @@ app.delete('/deleteTodo/:id', async (req, res) => {
 
 
 // Register
-app.post('/register', async (req, res) => {
+app.post('/register', limiter, async (req, res) => {
     try {
       const { username, email, password } = req.body;
       if(!password) {
@@ -185,7 +193,7 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$
 
 
 // Login
-app.post('/login', async (req, res) => {
+app.post('/login', limiter, async (req, res) => {
     try {
       const { username, password } = req.body;
       const user = await pool.query(
@@ -217,7 +225,7 @@ app.post('/login', async (req, res) => {
 
 
   //Forgot Password
-  app.post('/forgot-password', async (req, res) => {
+  app.post('/forgot-password', limiter, async (req, res) => {
     try {
       const { email } = req.body;
   
@@ -295,7 +303,7 @@ async function checkEmailExists(email) {
 }
 
 
-app.post('/reset-password/:token', async (req, res) => {
+app.post('/reset-password/:token', limiter, async (req, res) => {
   try {
     const { token } = req.params;
     const { newPassword } = req.body;
@@ -366,7 +374,7 @@ async function updatePasswordByEmail(email, newPassword) {
 }
   
 // Add this route before your other routes
-app.get('/validate-password/:token', async (req, res) => {
+app.get('/validate-password/:token', limiter, async (req, res) => {
   try {
     const { token } = req.params;
     console.log(token)
