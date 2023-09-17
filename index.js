@@ -164,7 +164,7 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$
     );
 
     if (existingEmail.rows.length > 0) {
-      return res.status(403).json({ error: 'Email already in use' });
+      return res.status(405).json({ error: 'Email already in use' });
     }
 
 
