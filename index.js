@@ -51,12 +51,12 @@ app.get('/users', async (req, res) => {
 //Fetch ToDo List
 app.get('/todos', async (req, res) => {
   try {
-    const { username } = req.query; // Retrieve the username from the query parameter
-    const todos = await pool.query('SELECT * FROM Todos WHERE LOWER(username) = LOWER($1)', [username]);
-    // Check that todos.rows is a valid array of objects
-    if (Array.isArray(todos.rows)) {
-      // Send the list of todos as a JSON response
-      res.json(todos.rows);
+    const users = await pool.query('SELECT * FROM Todos');
+    console.log(users.rows)
+    // Check that users.rows is a valid array of objects
+    if (Array.isArray(users.rows)) {
+      // Send the list of users as a JSON response
+      res.json(users.rows);
     } else {
       // Handle unexpected data structure
       res.status(500).send('Unexpected data structure');
@@ -67,35 +67,21 @@ app.get('/todos', async (req, res) => {
   }
 });
 
-
 //Add ToDos
 app.post('/addtodos', async (req, res) => {
   try {
     const { username, task_name } = req.body;
-    // Check if the username already exists in the database (case-insensitive)
-    const existingUser = await pool.query(
-      'SELECT * FROM Users WHERE LOWER(username) = LOWER($1)',
-      [username]
-    );
-
-    if (existingUser.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Insert the new todo for the user
-    await pool.query(
+    const user = await pool.query(
       'INSERT INTO Todos (username, task_name) VALUES ($1, $2)',
       [username, task_name]
     );
-
     res.setHeader('Content-Type', 'application/json')
-    res.status(201).json({ message: 'Todo added' });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send('Server error');
-  }
+      res.status(201).json({ message: 'Todo added' });
+  } catch(error) {
+  console.error(error.message);
+    res.status(500).send('Server error')
+  } 
 });
-
 
 
 //Edit Todos
@@ -158,7 +144,7 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$
       
       // Check if the username already exists in the database
     const existingUser = await pool.query(
-      'SELECT * FROM Users WHERE LOWER(username) = LOWER($1)',
+      'SELECT * FROM Users WHERE username = $1',
       [username]
     );
     
@@ -203,7 +189,7 @@ app.post('/login', async (req, res) => {
     try {
       const { username, password } = req.body;
       const user = await pool.query(
-        'SELECT * FROM Users WHERE LOWER(username) = LOWER($1)',
+        'SELECT * FROM Users WHERE username = $1',
         [username]
       );
       if (user.rows.length === 0) {
