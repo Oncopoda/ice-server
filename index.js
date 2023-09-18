@@ -188,8 +188,7 @@ app.post('/login', async (req, res) => {
     try {
       const { username, password } = req.body;
       const user = await pool.query(
-        'SELECT * FROM Users', 
-        [username]
+        'SELECT * FROM Users'
       );
       if (user.rows.length === 0) {
         return res.status(401).json('Invalid credentials');
