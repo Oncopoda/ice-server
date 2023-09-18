@@ -188,7 +188,7 @@ app.post('/login', async (req, res) => {
     try {
       const { username, password } = req.body;
       const user = await pool.query(
-        'SELECT * FROM Users WHERE LOWER(username) = LOWER($1)', 
+        'SELECT * FROM Users', 
         [username]
       );
       if (user.rows.length === 0) {
