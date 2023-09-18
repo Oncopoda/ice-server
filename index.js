@@ -52,6 +52,7 @@ app.get('/users', async (req, res) => {
 app.get('/todos', async (req, res) => {
   try {
     const users = await pool.query('SELECT * FROM Todos');
+    console.log(users.rows)
     // Check that users.rows is a valid array of objects
     if (Array.isArray(users.rows)) {
       // Send the list of users as a JSON response
@@ -188,7 +189,8 @@ app.post('/login', async (req, res) => {
     try {
       const { username, password } = req.body;
       const user = await pool.query(
-        'SELECT * FROM Users'
+        'SELECT * FROM Users WHERE username = $1',
+        [username]
       );
       if (user.rows.length === 0) {
         return res.status(401).json('Invalid credentials');
