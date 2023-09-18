@@ -188,7 +188,8 @@ app.post('/login', async (req, res) => {
     try {
       const { username, password } = req.body;
       const user = await pool.query(
-        'SELECT * FROM Users WHERE LOWER(username) = LOWER($1)'
+        'SELECT * FROM Users WHERE LOWER(username) = LOWER($1)', 
+        [username]
       );
       if (user.rows.length === 0) {
         return res.status(401).json('Invalid credentials');
