@@ -17,7 +17,13 @@ const app = express();
 
 
 // Middleware
-app.use(cors());
+//app.use(cors());
+const corsOptions = {
+  origin: '/',
+  methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
+    credentials: true
+}
+app.use(cors(corsOptions))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Routes
@@ -251,7 +257,7 @@ app.post('/login', async (req, res) => {
         html: `
           <p>You have requested to reset your password.</p>
           <p>Click the following link to reset your password:</p>
-          <a href="http://localhost:3000/validate-password?token=${token}">Reset Password</a>
+          <a href="https://the-cold-list.netlify.app/validate-password?token=${token}">Reset Password</a>
         `,
       };
   
