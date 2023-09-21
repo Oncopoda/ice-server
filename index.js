@@ -19,7 +19,7 @@ const app = express();
 // Middleware
 //app.use(cors());
 const corsOptions = {
-  origin: '/',
+  origin: 'https://filthy-sweatshirt-boa.cyclic.app/login',
   methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
     credentials: true
 }
