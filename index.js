@@ -1,4 +1,5 @@
 const express = require('express');
+const app = express();
 
 const cors = require('cors');
 const pool = require('./db');
@@ -12,13 +13,20 @@ const secretKey = crypto.randomBytes(32).toString('hex');
 const nodemailer = require('nodemailer');
 
 
-const app = express();
+
 
 
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+//app.use(cors());
+//app.use(express.json());
+const corsOptions = {
+  origin: 'https://filthy-sweatshirt-boa.cyclic.app/login',
+  methods: 'GET, HEAD, PUT PATCH, POST, DELETE',
+  credentials: true
+}
+app.use(cors(corsOptions))
+
 app.use(express.urlencoded({ extended: true }));
 // Routes
 app.post('/test', (req, res) => {
