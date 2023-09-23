@@ -13,27 +13,22 @@ const secretKey = crypto.randomBytes(32).toString('hex');
 const nodemailer = require('nodemailer');
 
 
-
-
-
-
 // Middleware
 app.use(cors());
 app.use(express.json());
-/*
-const corsOptions = {
-  origin: 'https://filthy-sweatshirt-boa.cyclic.app/login',
-  methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
-  credentials: true
-}
-app.use(cors(corsOptions))
-*/
+
 
 app.use(express.urlencoded({ extended: true }));
 // Routes
 app.post('/test', (req, res) => {
   res.json({ message: 'Received!' });
 });
+
+//catch-all route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/index.html'));
+});
+
 
 
 
