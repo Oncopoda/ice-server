@@ -26,12 +26,6 @@ app.post('/test', (req, res) => {
 
 
 
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
-
-
 // Add this route before your other routes
 app.get('/users', async (req, res) => {
   try {
