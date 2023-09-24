@@ -20,13 +20,13 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 // Routes
-app.post('/test', (req, res) => {
+app.post('https://filthy-sweatshirt-boa.cyclic.app/test', (req, res) => {
   res.json({ message: 'Received!' });
 });
 
 
 // Add this route before your other routes
-app.get('/users', async (req, res) => {
+app.get('https://filthy-sweatshirt-boa.cyclic.app/users', async (req, res) => {
   try {
     const users = await pool.query('SELECT * FROM Users');
     // Check that users.rows is a valid array of objects
@@ -44,7 +44,7 @@ app.get('/users', async (req, res) => {
 });
 
 //Fetch ToDo List
-app.get('/todos', async (req, res) => {
+app.get('https://filthy-sweatshirt-boa.cyclic.app/todos', async (req, res) => {
   try {
     const users = await pool.query('SELECT * FROM Todos');
     // Check that users.rows is a valid array of objects
@@ -62,7 +62,7 @@ app.get('/todos', async (req, res) => {
 });
 
 //Add ToDos
-app.post('/addtodos', async (req, res) => {
+app.post('https://filthy-sweatshirt-boa.cyclic.app/addtodos', async (req, res) => {
   try {
     const { username, task_name } = req.body;
     const user = await pool.query(
@@ -79,7 +79,7 @@ app.post('/addtodos', async (req, res) => {
 
 
 //Edit Todos
-app.put('/editTodos/:id', async (req, res) => {
+app.put('https://filthy-sweatshirt-boa.cyclic.app/editTodos/:id', async (req, res) => {
   try {
     const taskId = parseInt(req.params.id);
     const { task_name } = req.body;
@@ -101,7 +101,7 @@ app.put('/editTodos/:id', async (req, res) => {
 
 
 //Delete
-app.delete('/deleteTodo/:id', async (req, res) => {
+app.delete('https://filthy-sweatshirt-boa.cyclic.app/deleteTodo/:id', async (req, res) => {
   const todoId = parseInt(req.params.id);
 
   try {
@@ -122,7 +122,7 @@ app.delete('/deleteTodo/:id', async (req, res) => {
 
 
 // Register
-app.post('/register', async (req, res) => {
+app.post('https://filthy-sweatshirt-boa.cyclic.app/register', async (req, res) => {
     try {
       const { username, email, password } = req.body;
       if(!password) {
@@ -179,7 +179,7 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$
 
 
 // Login
-app.post('/login', async (req, res) => {
+app.post('https://filthy-sweatshirt-boa.cyclic.app/login', async (req, res) => {
     try {
       const { username, password } = req.body;
       const user = await pool.query(
@@ -211,7 +211,7 @@ app.post('/login', async (req, res) => {
 
 
   //Forgot Password
-  app.post('/forgot-password', async (req, res) => {
+  app.post('https://filthy-sweatshirt-boa.cyclic.app/forgot-password', async (req, res) => {
     try {
       const { email } = req.body;
   
@@ -281,7 +281,7 @@ async function checkEmailExists(email) {
   }
 }
 
-app.post('/reset-password/:token', async (req, res) => {
+app.post('https://filthy-sweatshirt-boa.cyclic.app/reset-password/:token', async (req, res) => {
   try {
     const { token } = req.params;
     const { newPassword } = req.body;
@@ -346,7 +346,7 @@ async function updatePasswordByEmail(email, newPassword) {
 }
   
 
-app.get('/validate-password/:token', async (req, res) => {
+app.get('https://filthy-sweatshirt-boa.cyclic.app/validate-password/:token', async (req, res) => {
   try {
     const { token } = req.params;
     // Query the database to check if the token exists and is not expired
