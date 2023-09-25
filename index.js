@@ -30,12 +30,9 @@ app.post('/test', (req, res) => {
 app.get('/users', async (req, res) => {
   try {
     const users = await pool.query('SELECT * FROM Users');
-    // Check that users.rows is a valid array of objects
     if (Array.isArray(users.rows)) {
-      // Send the list of users as a JSON response
       res.json(users.rows);
     } else {
-      // Handle unexpected data structure
       res.status(500).send('Unexpected data structure');
     }
   } catch (error) {
@@ -48,12 +45,9 @@ app.get('/users', async (req, res) => {
 app.get('/todos', async (req, res) => {
   try {
     const users = await pool.query('SELECT * FROM Todos');
-    // Check that users.rows is a valid array of objects
     if (Array.isArray(users.rows)) {
-      // Send the list of users as a JSON response
       res.json(users.rows);
     } else {
-      // Handle unexpected data structure
       res.status(500).send('Unexpected data structure');
     }
   } catch (error) {
